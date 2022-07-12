@@ -24,11 +24,11 @@ public class EventHandler {
 		eventRectDefaultY=eventRect.y;
 	}
 	
-	public void checkEvent() {
+	/*public void checkEvent() {
 		if(hit(4,7,"right")==true) {
 			damagePit(gp.pauseState);
 		}
-	}
+	}*/
 	public boolean hit(int eventCol,int eventRow, String reqDirection) {
 		
 		eventRect.x=eventCol*gp.tileSize+eventRect.x;

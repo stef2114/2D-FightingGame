@@ -6,9 +6,12 @@ import javax.imageio.ImageIO;
 import main.UtilityTool;
 import main.GamePanel;
 
-public class objHeart extends SuperObject{
+public class objHeart{
 
 	GamePanel gp;
+	public BufferedImage image1,image2,image3;
+	public String name="";
+	UtilityTool uTool = new UtilityTool();
 	public objHeart(GamePanel gp) {
 		this.gp=gp;	
 		name="Heart";

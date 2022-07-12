@@ -9,10 +9,10 @@ import javax.sound.sampled.Clip;
 public class Sound {
 
 	Clip clip;
-	URL soundURL[]=new URL[2];
+	URL soundURL[]=new URL[10];
 	public Sound() {
 		soundURL[0]=getClass().getResource("/sounds/Fighting theme 2.wav");
-		soundURL[1]=getClass().getResource("/sounds/Fighting theme 3.wav");
+		soundURL[1]=getClass().getResource("/sounds/burning.wav");
 	}
 	public void setFile(int i) {
 		try {

@@ -27,6 +27,13 @@ public class CollisionChecker {
 		return false;
 	}
 	
+	public boolean CheckAttack(Entity user, Entity target) {
+		if(user.attackArea.intersects(target.solidArea)){
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean CheckEntity(Entity player, Entity target) {
 		switch(player.direction) {
 		case "up":
