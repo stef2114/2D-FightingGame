@@ -53,19 +53,31 @@ public class Projectile {
 			if(gp.gameMode==0) {
 				collisionOn=CheckEntity(gp.npc_rival);
 				if(collisionOn==true) {
-					gp.npc_rival.hp--;
+					if(gp.npc_rival.blocking==true) {
+						gp.npc_rival.hp-=5;
+					}else {
+						gp.npc_rival.hp-=10;
+					}
 				}
 			}else {
 				collisionOn=CheckEntity(gp.player2);
 				if(collisionOn==true) {
-					gp.player2.hp--;
+					if(gp.player2.blocking==true) {
+						gp.player2.hp-=5;
+					}else {
+						gp.player2.hp-=10;
+					}
 				}
 			}
 				
 		}else {
 			collisionOn=CheckEntity(gp.player1);
 			if(collisionOn==true) {
-				gp.player1.hp--;
+				if(gp.player1.blocking==true) {
+					gp.player1.hp-=5;
+				}else {
+					gp.player1.hp-=10;
+				}
 			}
 		}
 		if(collisionOn==false) {

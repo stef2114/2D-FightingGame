@@ -17,7 +17,7 @@ public class Entity {
 	GamePanel gp;
 	public int x,y;
 	public int speed;
-	public final int maxHP=10,maxSTAMINA=10;
+	public final int maxHP=100,maxSTAMINA=10;
 	public int hp,stamina,staminaRecover=0;
 	public BufferedImage left1,left2,jumpLeft,jumpRight,fallLeft,fallRight,crouchLeft,crouchRight,right1,right2,
 	lightAttackRight1,lightAttackRight2,lightAttackLeft1,lightAttackLeft2,heavyAttackRight1,heavyAttackRight2,
@@ -38,6 +38,7 @@ public class Entity {
 	public boolean invincible=false;
 	public Projectile projectile;
 	public boolean relesaseRangeAttack=false;
+	public boolean rangeAttack=false;
 	public boolean jump=false;
 	public String jumpDirection="";
 	public boolean crouch=false;

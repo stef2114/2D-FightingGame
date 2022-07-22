@@ -26,15 +26,17 @@ public class KeyHandler implements KeyListener{
 			}
 			break;
 		case KeyEvent.VK_DOWN:
-			if(gp.ui.commandNumY<2) {
+			if(gp.ui.commandNumY<3) {
 				gp.ui.commandNumY++;
 			}
 			break;
 		case KeyEvent.VK_ENTER:
-			if(gp.ui.commandNumY==2) {
+			if(gp.ui.commandNumY==3) {
 				System.exit(0);
-			}
-			else {
+			}else if(gp.ui.commandNumY==2) {
+				gp.ui.titleScreenState=5;
+				gp.ui.commandNumY=0;
+			}else {
 				gp.gameMode=gp.ui.commandNumY;
 				gp.ui.commandNumY=0;
 				if(gp.gameMode==0) {
@@ -44,6 +46,29 @@ public class KeyHandler implements KeyListener{
 				}
 				gp.ui.titleScreenState=1;
 			}
+			break;
+			
+		}
+	}
+	
+	public void titleScreen5(int code) {
+		switch(code) {
+		case KeyEvent.VK_UP:
+			if(gp.ui.commandNumY>0) {
+				gp.ui.commandNumY--;
+			}
+			break;
+		case KeyEvent.VK_DOWN:
+			if(gp.ui.commandNumY<2) {
+				gp.ui.commandNumY++;
+			}
+			break;
+		case KeyEvent.VK_ENTER:
+			
+			if(gp.ui.commandNumY==2) {
+				gp.ui.titleScreenState=0;
+			}
+			gp.ui.commandNumY=0;
 			break;
 			
 		}
@@ -102,12 +127,15 @@ public class KeyHandler implements KeyListener{
 				
 				gp.ui.commandNumX=0;
 				gp.ui.commandNumY=0;
-			}else {
+			}else if(gp.ui.titleScreenState==3){
 				gp.bG.name=gp.ui.nameListBg[gp.ui.commandNumY*gp.ui.MaxX+gp.ui.commandNumX];
 				//System.out.println(gp.ui.nameListBg[gp.ui.commandNumY*gp.ui.MaxX+gp.ui.commandNumX]);
 				gp.gameState=gp.playState;
+				gp.ui.titleScreenState=4;
 				gp.ui.commandNumX=0;
 				gp.ui.commandNumY=0;
+			}else {
+				System.exit(0);
 			}
 			
 			break;
@@ -124,7 +152,9 @@ public class KeyHandler implements KeyListener{
 			if(gp.ui.titleScreenState==0) {
 				titleScreen0(code);
 			}
-			else {
+			else if(gp.ui.titleScreenState==5){
+				titleScreen5(code);
+			}else {
 				otherTitleScreen(code);
 			}
 		}
@@ -134,18 +164,38 @@ public class KeyHandler implements KeyListener{
 			playState(code);
 		}
 		
-		if(gp.gameState==gp.optionState) {
-			//optionState(code);
-			
-		}
 		
 		if(gp.gameState==gp.pauseState) {
-			if(code==KeyEvent.VK_P) {
-				gp.gameState=gp.playState;
-			}
+			pauseState(code);
 		}
 		
 		
+	}
+	
+	
+	public void pauseState(int code) {
+		switch(code) {
+		case KeyEvent.VK_UP:
+			if(gp.ui.commandNumY>0) {
+				gp.ui.commandNumY--;
+			}
+			break;
+		case KeyEvent.VK_DOWN:
+			if(gp.ui.commandNumY<1) {
+				gp.ui.commandNumY++;
+			}
+			break;
+		case KeyEvent.VK_ENTER:
+			if(gp.ui.commandNumY==0) {
+				gp.gameState=gp.playState;
+			}else {
+				gp.ui.commandNumY=0;
+				System.exit(0);
+			}
+			
+			break;
+			
+		}
 	}
 	
 	/*public void optionState(int code) {
@@ -174,29 +224,29 @@ public class KeyHandler implements KeyListener{
 	
 	public void playState(int code) {
 		switch(code) {
-		case KeyEvent.VK_A:
-			left1Pressed=true;
-			break;
-		case KeyEvent.VK_D:
-			right1Pressed=true;
-			break;
 		case KeyEvent.VK_W:
 			jump1Pressed=true;
+			break;
+		case KeyEvent.VK_A:
+			left1Pressed=true;
 			break;
 		case KeyEvent.VK_S:
 			crouch1Pressed=true;
 			break;
-		case KeyEvent.VK_J:
-			left2Pressed=true;
-			break;
-		case KeyEvent.VK_L:
-			right2Pressed=true;
+		case KeyEvent.VK_D:
+			right1Pressed=true;
 			break;
 		case KeyEvent.VK_I:
 			jump2Pressed=true;
 			break;
+		case KeyEvent.VK_J:
+			left2Pressed=true;
+			break;
 		case KeyEvent.VK_K:
 			crouch2Pressed=true;
+			break;
+		case KeyEvent.VK_L:
+			right2Pressed=true;
 			break;
 		case KeyEvent.VK_SPACE:
 			lightAttack1=true;
@@ -230,11 +280,9 @@ public class KeyHandler implements KeyListener{
 			}
 			break;
 		case KeyEvent.VK_ESCAPE:
-			gp.gameState=gp.optionState;
-			break;
-		case KeyEvent.VK_P:
 			gp.gameState=gp.pauseState;
 			break;
+
 		}
 	}
 
@@ -243,29 +291,29 @@ public class KeyHandler implements KeyListener{
 		int code=e.getKeyCode();
 		
 		switch(code) {
-		case KeyEvent.VK_A:
-			left1Pressed=false;
-			break;
-		case KeyEvent.VK_D:
-			right1Pressed=false;
-			break;
 		case KeyEvent.VK_W:
 			jump1Pressed=false;
+			break;
+		case KeyEvent.VK_A:
+			left1Pressed=false;
 			break;
 		case KeyEvent.VK_S:
 			crouch1Pressed=false;
 			break;
-		case KeyEvent.VK_J:
-			left2Pressed=false;
-			break;
-		case KeyEvent.VK_L:
-			right2Pressed=false;
+		case KeyEvent.VK_D:
+			right1Pressed=false;
 			break;
 		case KeyEvent.VK_I:
 			jump2Pressed=false;
 			break;
+		case KeyEvent.VK_J:
+			left2Pressed=false;
+			break;
 		case KeyEvent.VK_K:
 			crouch2Pressed=false;
+			break;
+		case KeyEvent.VK_L:
+			right2Pressed=false;
 			break;
 		case KeyEvent.VK_SPACE:
 			lightAttack1=false;
@@ -286,11 +334,9 @@ public class KeyHandler implements KeyListener{
 			block1=false;
 			break;
 		case KeyEvent.VK_E:
-			shot1KeyPressed=false;
 			gp.player1.relesaseRangeAttack=false;
 			break;
 		case KeyEvent.VK_O:
-			shot2KeyPressed=false;
 			gp.player2.relesaseRangeAttack=false;
 			break;
 			

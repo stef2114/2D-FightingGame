@@ -59,43 +59,83 @@ public class NPC_Rival extends Entity{
 	public void setAction() {
 		
 		actionLockCounter++;
-		if(actionLockCounter==120) {
+		if(actionLockCounter==60) {
 			Random random= new Random();
-			int i=random.nextInt(125)+1;
-			if(i<=25) {
+			int i=random.nextInt(245)+1;
+			if(x-gp.player1.x<60 && x-gp.player1.x>-60) {
+				if(i<=20) {
+					if(gp.player1.x>x) {
+						direction="right";
+					}else {
+						direction="left";
+					}
+					
+					spriteCounter=0;
+				}else if(i<=50) {
+					if(gp.player1.x>x) {
+						direction="left";
+					}else {
+						direction="right";
+					}
+					spriteCounter=0;
+				}else if(i<=85 && (gp.player1.lightAttacking==true
+						 || gp.player1.heavyAttacking==true)) {
+					blocking=true;
+					spriteCounter=0;
+				}else if(i<=120 && (gp.player1.lightAttacking==true
+						 || gp.player1.heavyAttacking==true)) {
+					crouch=true;
+					spriteCounter=0;
+				}else if(i<=170) {
+					lightAttacking=true;
+					spriteCounter=0;
+				}else if(i<=205) {
+					heavyAttacking=true;
+					spriteCounter=0;
+				}else if(i<=210) {
+					jump=true;
+					spriteCounter=0;
+				}else if(i<=225) {
+					rangeAttack=true;
+					spriteCounter=0;
+				}else if(i<=245) {
+				}
+			}else {
+				if(i<=75) {
+					if(gp.player1.x>x) {
+						direction="right";
+					}else {
+						direction="left";
+					}
+					
+					spriteCounter=0;
+				}else if(i<=100) {
+					if(gp.player1.x>x) {
+						direction="left";
+					}else {
+						direction="right";
+					}
+					spriteCounter=0;
+				}else if(i<=125 && (gp.player1.lightAttacking==true
+						 || gp.player1.heavyAttacking==true)) {
+					blocking=true;
+					spriteCounter=0;
+				}else if(i<=150 && (gp.player1.lightAttacking==true
+						 || gp.player1.heavyAttacking==true)) {
+					crouch=true;
+					spriteCounter=0;
+				}else if(i<=175) {
+					jump=true;
+					spriteCounter=0;
+				}else if(i<=225) {
+					rangeAttack=true;
+					spriteCounter=0;
+				}else if(i<=245) {
+				}
 				
-			}/*else if
-			if(i<=50) {
-				rangeAttack=true;
-			}*/else if(i<=50) {
-				direction="left";
-				spriteCounter=0;
-			}	
-			else if(i<=75) {
-				direction="right";
-				spriteCounter=0;
-			}
-			else if(i<=100) {
-				lightAttacking=true;
-				spriteCounter=0;
-			}
-			else if(i<=125) {
-				heavyAttacking=true;
-				spriteCounter=0;
-			}
-			else if(i<=150) {
-				blocking=true;
-				spriteCounter=0;
-			}
-			else if(i<=175) {
-				crouch=true;
-				spriteCounter=0;
-			}
-			else if(i<=200) {
-				jump=true;
-				spriteCounter=0;
 			}
 			actionLockCounter=0;
+			
 		}
 		collisionOn=gp.ccheck.CheckCollision(this);
 		if(collisionOn==false) {
@@ -104,9 +144,12 @@ public class NPC_Rival extends Entity{
 	}
 	
 	public void update() {
-		setAction();
-		if(hp<=0) {
-			//gp.ui.showMessage("Player dead");
+		if(crouch!=true && jump!=true && blocking!=true && lightAttacking!=true && heavyAttacking!=true) {
+			setAction();
+		}
+		if(hp<1) {
+			gp.gameState=0;
+			gp.ui.text="Player 1 WON";
 		}else if(jump==true) {
 			if(jumpDirection=="") {
 				jump1Action();
@@ -116,6 +159,8 @@ public class NPC_Rival extends Entity{
 	
 		}else if(crouch==true){
 			crouchAction();
+		}else if(blocking==true){
+			block();
 		}else if(lightAttacking==true) {
 			lightAttack2();
 		}else if(heavyAttacking==true) {
@@ -143,7 +188,11 @@ public class NPC_Rival extends Entity{
 			}
 			attackOn=gp.ccheck.CheckAttack(this,gp.player1);
 			if(attackOn==true && gp.player1.invincible==false) {
-				gp.player1.hp-=1;
+				if(gp.player1.blocking==true) {
+					gp.player1.hp-=5;
+				}else {
+					gp.player1.hp-=10;
+				}
 				gp.player1.invincible=true;
 			}
 				
@@ -177,7 +226,11 @@ public class NPC_Rival extends Entity{
 			}
 			attackOn=gp.ccheck.CheckAttack(this,gp.player1);
 			if(attackOn==true && gp.player1.invincible==false) {
-				gp.player1.hp-=2;
+				if(gp.player1.blocking==true) {
+					gp.player1.hp-=10;
+				}else {
+					gp.player1.hp-=20;
+				}
 				gp.player1.invincible=true;
 			}	
 				
@@ -198,6 +251,13 @@ public class NPC_Rival extends Entity{
 		if(spriteCounter==20) {
 			solidArea.y-=gp.tileSize/2;
 			crouch=false;
+			spriteCounter=0;
+		}
+	}
+	public void block() {
+		spriteCounter++;
+		if(spriteCounter==20) {
+			blocking=false;
 			spriteCounter=0;
 		}
 	}
@@ -267,7 +327,7 @@ public class NPC_Rival extends Entity{
 	public void bundingAction(){
 	
 		
-		if(collisionOn==false && jump==false && crouch==false) {
+		if(collisionOn==false && jump==false && crouch==false && blocking==false) {
 			switch(direction) {
 			case "left": x-=speed;break;
 			case "right": x+=speed;break;
@@ -352,7 +412,7 @@ public class NPC_Rival extends Entity{
 		}
 		if(lightAttacking==true && direction == "left") {
 			g2.drawImage(image,x-gp.tileSize,y,null);
-		}else if(lightAttacking==true && direction == "left"){
+		}else if(heavyAttacking==true && direction == "left"){
 			//g2.drawImage(image,x-gp.tileSize,y-gp.tileSize,null);
 			g2.drawImage(image,x-gp.tileSize,y,null);
 		}else {

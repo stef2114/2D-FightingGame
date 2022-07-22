@@ -23,7 +23,8 @@ public class UI {
 	public String[] nameListBg = new String[1];
 	public BufferedImage image=null;
 	int n=0;
-	
+	public String text;
+	//int distance=gp.screenHeight2/6;	
 	
 	
 	public UI(GamePanel gp) {
@@ -98,41 +99,37 @@ public class UI {
 			drawPlayerLife();
 			drawPlayerStamina();
 		}
-		if(gp.gameState==gp.optionState) {
-			drawPlayerLife();
-			drawOptionScreen();
+		if(gp.gameState==gp.pauseState) {
+			drawPausedScreen();
 			
 		}
-		/*if(gp.gameState==gp.pauseState) {
-			drawPausedScreen();
-			drawPlayerLife();
-		}*/
 	}
 	
 	public void drawPlayerLife() {
-		int x=gp.tileSize/2;
-		int y=gp.tileSize/2;
+		int distance=gp.screenHeight2/18;
+		int x=distance/2;
+		int y=distance/2;
 		int i=0;
 		int n=gp.player1.hp;
 		while(i<n/2) {
 			g2.drawImage(heart_full,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
 		if(n%2!=0) {
 			g2.drawImage(heart_half,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
 		while(i<gp.player1.maxHP/2) {
 			g2.drawImage(heart_blank,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
 		
 		
-		x=gp.screenWidth-5*gp.tileSize-gp.tileSize/2;
-		y=gp.tileSize/2;
+		x=gp.screenWidth-5*distance-distance/2;
+		y=distance/2;
 		i=0;
 		if(gp.gameMode==0) {
 			n=gp.npc_rival.hp;
@@ -141,47 +138,48 @@ public class UI {
 		}
 		while(i<n/2) {
 			g2.drawImage(heart_full,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
-		if(n%2!=0) {
+		if(n/10%2!=0) {
 			g2.drawImage(heart_half,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
 		while(i<gp.player1.maxHP/2) {
 			g2.drawImage(heart_blank,x,y,null);
-			i++;
-			x+=gp.tileSize;
+			i+=10;
+			x+=distance;
 		}
 	}
 	
 	
 	
 	public void drawPlayerStamina() {
-		int x=gp.tileSize/2;
-		int y=gp.tileSize*2;
+		int distance=gp.screenHeight2/18;
+		int x=distance/2;
+		int y=distance*2;
 		int i=0;
 		int n=gp.player1.stamina;
 		while(i<n/2) {
 			g2.drawImage(stamina_full,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 		if(n%2!=0) {
 			g2.drawImage(stamina_half,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 		while(i<gp.player1.maxHP/2) {
 			g2.drawImage(stamina_blank,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 		
 		
-		x=gp.screenWidth-5*gp.tileSize-gp.tileSize/2;
-		y=gp.tileSize*2;
+		x=gp.screenWidth-5*distance-distance/2;
+		y=distance*2;
 		i=0;
 		if(gp.gameMode==0) {
 			n=gp.npc_rival.stamina;
@@ -191,27 +189,28 @@ public class UI {
 		while(i<n/2) {
 			g2.drawImage(stamina_full,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 		if(n%2!=0) {
 			g2.drawImage(stamina_half,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 		while(i<gp.player1.maxHP/2) {
 			g2.drawImage(stamina_blank,x,y,null);
 			i++;
-			x+=gp.tileSize;
+			x+=distance;
 		}
 	}
 	
 	public void titleScreen0() {
+		int distance=gp.screenHeight2/16;
 		g2.setColor(new Color(70,120,80));
 		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD,96F));
-		String text="FIGTHING GAME";
+		text="FIGTHING GAME";
 		int x=getXforCenteredText(text);
-		int y=gp.tileSize*6;
+		int y=distance*5;
 		g2.setColor(Color.black);
 		g2.drawString(text,x+5,y+5);
 		g2.setColor(Color.white);
@@ -220,7 +219,7 @@ public class UI {
 		
 		text="1 PLAYER";
 		x=getXforCenteredText(text);
-		y+=5*gp.tileSize;
+		y+=distance*3;
 		g2.drawString(text,x,y);
 		if(commandNumY==0) {
 			g2.drawString(">",x-gp.tileSize,y);
@@ -228,31 +227,41 @@ public class UI {
 		
 		text="2 PLAYERS";
 		x=getXforCenteredText(text);
-		y+=gp.tileSize;
+		y+=distance;
 		g2.drawString(text,x,y);
 		if(commandNumY==1) {
 			g2.drawString(">",x-gp.tileSize,y);
 		}
 		
-		text="QUIT";
+		text="OPTIONS";
 		x=getXforCenteredText(text);
-		y+=gp.tileSize;
+		y+=distance;
 		g2.drawString(text,x,y);
 		if(commandNumY==2) {
+			g2.drawString(">",x-gp.tileSize,y);
+		}
+		
+		text="QUIT";
+		x=getXforCenteredText(text);
+		y+=distance;
+		g2.drawString(text,x,y);
+		if(commandNumY==3) {
 			g2.drawString(">",x-gp.tileSize,y);
 		}
 	}
 	
 	public void titleScreen3() {
+		int distance=gp.screenHeight2/16;
 		g2.setColor(new Color(70,120,80));
 		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
-		String text="BackGround:";
+		text="BackGround:";
 		int x=getXforCenteredText(text);
-		int y=gp.tileSize*2;
+		int y=distance*2;
 		g2.setColor(Color.black);
 		g2.drawString(text,x+5,y+5);
-		
 		g2.setColor(Color.white);
+		g2.drawString(text,x,y);
+		
 		
 		int aux=0;
 		int bgDinstanceY=0;
@@ -301,11 +310,13 @@ public class UI {
 		}
 	}
 	
+	
+	
 	public void titleScreen1and2() {
+		int distance=gp.screenHeight2/16;
 		g2.setColor(new Color(70,120,80));
 		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
 		
-		String text="";
 		if(titleScreenState==1) {
 			text="PLAYER 1 CHARACTER:";
 		}
@@ -313,11 +324,12 @@ public class UI {
 			text="PLAYER 2 CHARACTER:";
 		}
 		int x=getXforCenteredText(text);
-		int y=gp.tileSize*2;
+		int y=distance*2;
 		g2.setColor(Color.black);
 		g2.drawString(text,x+5,y+5);
-		
 		g2.setColor(Color.white);
+		g2.drawString(text,x,y);
+		
 		
 		int aux=0;
 		int bgDinstanceY=0;
@@ -377,33 +389,95 @@ public class UI {
 			titleScreen3();
 				
 			
+		}
+		else if(titleScreenState==4) {
+			titleScreen4();
+				
+		}else if(titleScreenState==5) {
+			titleScreen5();
+				
 		}else {
 			titleScreen1and2();
 		}
 		
 	}
 	
-	public void drawOptionScreen() {
+	
+	public void titleScreen4() {
+		
 		g2.setColor(Color.black);
-		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
-		g2.setFont(g2.getFont().deriveFont(32F));
-		int frameX=gp.screenWidth2/4;
-		int frameY=gp.screenHeight2/4;
-		int frameWidth=frameX*2;
-		int frameHeight=frameY*2;
-		g2.fillRect(frameX,frameY,frameWidth,frameHeight);
-		g2.setColor(Color.white);
-		String text="";
-		text="OPTIONS";
+		g2.fillRect(gp.screenWidth2/3,gp.screenHeight2/3,gp.screenWidth2/3,gp.screenHeight2/3);
+		g2.setFont(g2.getFont().deriveFont(48F));
 		int x=getXforCenteredText(text);
-		g2.drawString(text,gp.screenWidth2/2,gp.screenHeight2/2);
+		int y=gp.screenWidth2/2;
+		g2.setColor(Color.white);
+		g2.drawString(text,x,y);
+		y+=2*gp.tileSize;
+		text="EXIT";
+		x=getXforCenteredText(text);
+		g2.drawString(text,x,y);
+		
 	}
 	
-	public void drawPausedScreen() {
-		String text="PAUSED";
+	public void titleScreen5() {
+		
+		int distance=gp.screenHeight2/16;
+		g2.setColor(new Color(70,120,80));
+		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD,96F));
+		text="OPTIONS";
 		int x=getXforCenteredText(text);
-		int y=gp.screenHeight/2;
+		int y=distance*5;
+		g2.setColor(Color.black);
+		g2.drawString(text,x+5,y+5);
+		g2.setColor(Color.white);
 		g2.drawString(text,x,y);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD,48F));
+		
+		text="VIDEO";
+		x=getXforCenteredText(text);
+		y+=distance*3;
+		g2.drawString(text,x,y);
+		if(commandNumY==0) {
+			g2.drawString(">",x-gp.tileSize,y);
+		}
+		text="SOUND";
+		x=getXforCenteredText(text);
+		y+=distance;
+		g2.drawString(text,x,y);
+		if(commandNumY==1) {
+			g2.drawString(">",x-gp.tileSize,y);
+		}
+		
+		text="MAIN MENU";
+		x=getXforCenteredText(text);
+		y+=distance;
+		g2.drawString(text,x,y);
+		if(commandNumY==2) {
+			g2.drawString(">",x-gp.tileSize,y);
+		}
+	}
+	
+	
+	public void drawPausedScreen() {
+	
+		
+		g2.setColor(Color.black);
+		g2.fillRect(gp.screenWidth2/3,gp.screenHeight2/3,gp.screenWidth2/3,gp.screenHeight2/3);
+		g2.setFont(g2.getFont().deriveFont(48F));
+		g2.setColor(Color.white);
+		text="RESUME";
+		int x=getXforCenteredText(text);
+		g2.drawString(text,x,gp.screenHeight2/9*4);
+		if(commandNumY==0) {
+			g2.drawString(">",x-gp.tileSize,gp.screenHeight2/9*4);
+		}
+		text="EXIT";
+		x=getXforCenteredText(text);
+		g2.drawString(text,x,gp.screenHeight2/5*3);
+		if(commandNumY==1) {
+			g2.drawString(">",x-gp.tileSize,gp.screenHeight2/5*3);
+		}
 	}
 	public int getXforCenteredText(String text) {
 		int length=(int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();

@@ -75,45 +75,79 @@ public class Player extends Entity{
 			
 	}
 	
-	
-	public void update1() {
+	public void update0() {
 		
-		if(jump==false && y>gp.screenHeight2/5*3) {
-			if(gp.gameMode==0) {
-				if(y-gp.tileSize>gp.npc_rival.y) {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
-				}
-			}else {
-				if(y-gp.tileSize>gp.player2.y) {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
-				}
+		if(hp<1) {
+			gp.gameState=0;
+			gp.ui.text="Player 1 LOST";
+		}else if(jump==false && y>gp.screenHeight2/5*3) {
+			if(y-gp.tileSize>gp.npc_rival.y) {
+				collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
 			}
 			if(collisionOn==false ) {
 				y-=speed;
+			}else{
+			collisionOn=false;
 			}
-		}
-		else if(hp<=0) {
-			//gp.ui.showMessage("Player dead");
 		}else if(jump==true) {
 			if(jumpDirection=="") {
-				jump11Action();
+				jump1Action0();
 			}else {
-				jump12Action();
+				jump2Action0();
 			}					
 	
 		}else if(crouch==true){
 			crouchAction();
 		}else if(lightAttacking==true) {
-			lightAttack1();
+			lightAttack10();
 		}else if(heavyAttacking==true) {
-			heavyAttack1();
+			heavyAttack10();
+		}else if(blocking==true) {
+			block();
 		}else {
-			bundingAction1();
+			bundingAction10();
 					
 		}
 		
 	}
-	public void lightAttack1() {
+	
+	
+	public void update1() {
+		
+		if(hp<1) {
+			gp.gameState=0;
+			gp.ui.text="Player 2 WON";
+		}else if(jump==false && y>gp.screenHeight2/5*3) {
+			if(y-gp.tileSize>gp.player2.y) {
+				collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
+			}
+			if(collisionOn==false ) {
+				y-=speed;
+			}else{
+			collisionOn=false;
+			}
+		}else if(jump==true) {
+			if(jumpDirection=="") {
+				jump1Action1();
+			}else {
+				jump2Action1();
+			}					
+	
+		}else if(crouch==true){
+			crouchAction();
+		}else if(lightAttacking==true) {
+			lightAttack11();
+		}else if(heavyAttacking==true) {
+			heavyAttack11();
+		}else if(blocking==true) {
+			block();
+		}else {
+			bundingAction11();
+					
+		}
+		
+	}
+	public void lightAttack11() {
 		spriteCounter++;
 		if(spriteCounter<=5) {
 			spriteNum=1;
@@ -125,18 +159,14 @@ public class Player extends Entity{
 			}else {
 				attackArea.x=x+gp.tileSize;
 			}
-			if(gp.gameMode==0) {
-				attackOn=gp.ccheck.CheckAttack(this,gp.npc_rival);
-				if(attackOn==true && gp.npc_rival.invincible==false) {
-					gp.npc_rival.hp-=1;
-					gp.npc_rival.invincible=true;
+			attackOn=gp.ccheck.CheckAttack(this,gp.player2);
+			if(attackOn==true && gp.player2.invincible==false) {
+				if(gp.player2.blocking==true) {
+					gp.player2.hp-=5;
+				}else {
+					gp.player2.hp-=10;
 				}
-			}else {
-				attackOn=gp.ccheck.CheckAttack(this,gp.player2);
-				if(attackOn==true && gp.player2.invincible==false) {
-					gp.player2.hp-=1;
-					gp.player2.invincible=true;
-				}
+				gp.player2.invincible=true;
 			}
 				
 				
@@ -147,24 +177,62 @@ public class Player extends Entity{
 			spriteCounter=0;
 			lightAttacking=false;
 			stamina--;
-			if(gp.gameMode==0) {
-				gp.npc_rival.invincible=false;
-			}
-			else {
-				gp.player2.invincible=false;
-			}
+			
+			gp.player2.invincible=false;
+			
 				
 		}
 	}
 	
 	
-	public void heavyAttack1() {
+	public void lightAttack10() {
 		spriteCounter++;
-		if(spriteCounter<=20) {
+		if(spriteCounter<=5) {
 			spriteNum=1;
-		}if(spriteCounter<=40) {
+		}else if(spriteCounter<=25) {
+			spriteNum=2;
+			attackArea.y=y+12;
+			if(direction=="left") {
+				attackArea.x=x-gp.tileSize;
+			}else {
+				attackArea.x=x+gp.tileSize;
+			}
+			attackOn=gp.ccheck.CheckAttack(this,gp.npc_rival);
+			if(attackOn==true && gp.npc_rival.invincible==false) {
+				if(gp.npc_rival.blocking==true) {
+					gp.npc_rival.hp-=5;
+				}else {
+					gp.npc_rival.hp-=10;
+				}
+				if(gp.npc_rival.hp<1) {
+					gp.gameState=0;
+				}
+				gp.npc_rival.invincible=true;
+			}
+				
+				
+		}else if(spriteCounter<=30){
+			spriteNum=1;
+				
+		}else {
+			spriteCounter=0;
+			lightAttacking=false;
+			stamina--;
+	
+			gp.npc_rival.invincible=false;
+		
+				
+		}
+	}
+	
+	
+	public void heavyAttack10() {
+		spriteCounter++;
+		if(spriteCounter<=10) {
+			spriteNum=1;
+		}if(spriteCounter<=25) {
 			spriteNum=2;	
-		}else if(spriteCounter<=60) {
+		}else if(spriteCounter<=50) {
 			spriteNum=3;
 			attackArea.y=y+12;
 			if(direction=="left") {
@@ -172,69 +240,84 @@ public class Player extends Entity{
 			}else {
 				attackArea.x=x+gp.tileSize;
 			}
-			if(gp.gameMode==0) {
-				attackOn=gp.ccheck.CheckAttack(this,gp.npc_rival);
-				if(attackOn==true && gp.npc_rival.invincible==false) {
-					gp.npc_rival.hp-=2;
-					gp.npc_rival.invincible=true;
+			attackOn=gp.ccheck.CheckAttack(this,gp.npc_rival);
+			if(attackOn==true && gp.npc_rival.invincible==false) {
+				if(gp.npc_rival.blocking==true) {
+					gp.npc_rival.hp-=10;
+				}else {
+					gp.npc_rival.hp-=20;
 				}
-			}else {
-				attackOn=gp.ccheck.CheckAttack(this,gp.player2);
-				if(attackOn==true && gp.player2.invincible==false) {
-					gp.player2.hp-=2;
-					gp.player2.invincible=true;
+				if(gp.npc_rival.hp<1) {
+					gp.gameState=0;
 				}
+				gp.npc_rival.invincible=true;
 			}
+
 				
 				
-		}else if(spriteCounter<=70){
+		}else if(spriteCounter<=55){
 			spriteNum=1;
 				
 		}else {
 			spriteCounter=0;
 			heavyAttacking=false;
 			stamina-=2;
-			if(gp.gameMode==0) {
-				gp.npc_rival.invincible=false;
-			}
-			else {
-				gp.player2.invincible=false;
-			}
+			
+			gp.npc_rival.invincible=false;
+			
 				
 		}
 	}
 	
-	public boolean check1Landing() {
-		if(y>gp.screenHeight2/5*3) {
-			if(gp.gameMode==0) {
-				if(gp.ccheck.CheckEntity(this, gp.npc_rival)==true) {
-					if(y>gp.npc_rival.y) {
-						return true;
-					}
-				}
-				return false;
-				
+	
+	public void heavyAttack11() {
+		spriteCounter++;
+		if(spriteCounter<=10) {
+			spriteNum=1;
+		}if(spriteCounter<=25) {
+			spriteNum=2;	
+		}else if(spriteCounter<=50) {
+			spriteNum=3;
+			attackArea.y=y+12;
+			if(direction=="left") {
+				attackArea.x=x-gp.tileSize;
 			}else {
-				if(gp.ccheck.CheckEntity(this, gp.player2)==true) {
-					if(y>gp.player2.y) {
-						return true;
-					}
-				}
-				return false;
+				attackArea.x=x+gp.tileSize;
 			}
+		
+			attackOn=gp.ccheck.CheckAttack(this,gp.player2);
+			if(attackOn==true && gp.player2.invincible==false) {
+				if(gp.player2.blocking==true) {
+					gp.player2.hp-=10;
+				}else {
+					gp.player2.hp-=20;
+				}
+				gp.player2.invincible=true;
+			}
+				
+				
+		}else if(spriteCounter<=55){
+			spriteNum=1;
+				
+		}else {
+			spriteCounter=0;
+			heavyAttacking=false;
+			stamina-=2;
+			
+			gp.player2.invincible=false;
+			
+				
 		}
-		return true;
 	}
 	
 	
-	public void jump11Action() {
+	
+	public void jump1Action0() {
 		
 		spriteCounter++;
-		if(gp.gameMode==0) {
-			collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
-		}else {
-			collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
-		}
+		
+		collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
+		
 	
 		if(collisionOn==false) {
 			if(spriteCounter<=20) {
@@ -247,15 +330,34 @@ public class Player extends Entity{
 				spriteCounter=0;
 			}
 		}
+		solidArea.y=y+2;
 	}
 	
-	public void jump12Action() {
+	public void jump1Action1() {
+		
 		spriteCounter++;
-		if(gp.gameMode==0) {
-			collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
-		}else {
-			collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
+		
+		collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
+		
+	
+		if(collisionOn==false) {
+			if(spriteCounter<=20) {
+				y-=speed;
+			}else if(spriteCounter<40) {
+				y+=speed;
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
 		}
+		solidArea.y=y+2;
+	}
+	
+	public void jump2Action0() {
+		spriteCounter++;
+		collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
+		
 	
 		if(collisionOn==false && jumpDirection=="left") {
 			collisionOn=gp.ccheck.CheckCollision(this);
@@ -290,6 +392,51 @@ public class Player extends Entity{
 				spriteCounter=0;
 			}
 		}
+		solidArea.x=x+6;
+		solidArea.y=y+2;
+	}
+	
+	
+	public void jump2Action1() {
+		spriteCounter++;
+		collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
+		
+	
+		if(collisionOn==false && jumpDirection=="left") {
+			collisionOn=gp.ccheck.CheckCollision(this);
+			if(spriteCounter<=20) {
+				y-=speed;
+				if(collisionOn==false) {
+					x-=speed;
+				}
+				
+			}else if(spriteCounter<40) {
+				y+=speed;
+				if(collisionOn==false) {
+					x-=speed;
+				}
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
+		}
+		
+		if(collisionOn==false && jumpDirection=="right") {
+			if(spriteCounter<=20) {
+				y-=speed;
+				x+=speed;
+			}else if(spriteCounter<40) {
+				y+=speed;
+				x+=speed;
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
+		}
+		solidArea.x=x+6;
+		solidArea.y=y+2;
 	}
 	
 	public void crouchAction() {
@@ -301,7 +448,16 @@ public class Player extends Entity{
 		}
 	}
 	
-	public void bundingAction1(){
+	public void block() {
+		spriteCounter++;
+		if(spriteCounter==60) {
+			blocking=false;
+			spriteCounter=0;
+			//dc mai merge un pas cand apas de pe loc
+		}
+	}
+	
+	public void bundingAction10(){
 		if(keyH.jump1Pressed==true || keyH.crouch1Pressed==true || keyH.left1Pressed==true ||
 				keyH.right1Pressed==true || keyH.lightAttack1==true|| keyH.heavyAttack1==true|| keyH.block1==true) {
 			if(keyH.jump1Pressed==true) {
@@ -313,15 +469,26 @@ public class Player extends Entity{
 					jumpDirection="right";
 				}
 				
-			}else if(keyH.lightAttack1==true) {
+			}else if(keyH.lightAttack1==true && stamina>0) {
 				lightAttacking=true;
 				spriteCounter=0;
-			}else if(keyH.heavyAttack1==true) {
+				staminaRecover=0;
+			}else if(keyH.heavyAttack1==true && stamina>0) {
 				heavyAttacking=true;
 				spriteCounter=0;
+				staminaRecover=0;
 			}else if(keyH.block1==true) {
 				blocking=true;
 				spriteCounter=0;
+			}
+			else if(keyH.shot1KeyPressed==true && stamina>0) {
+				projectile=new Projectile(projectileName, gp);
+				projectile.set(x,y, direction,this);
+				gp.projectileList.add(projectile);
+				gp.playSE(1);
+				stamina--;
+				staminaRecover=0;
+				keyH.shot1KeyPressed=false;
 			}else if(keyH.crouch1Pressed==true) {
 				crouch=true;
 				solidArea.y+=gp.tileSize/2;
@@ -338,16 +505,11 @@ public class Player extends Entity{
 			collisionOn=gp.ccheck.CheckCollision(this);
 		
 			if(collisionOn==false) {
-				if(gp.gameMode==0) {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
-				}else {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
-				}
-			
+				collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
 			}
 	
 		
-			if(collisionOn==false && jump==false && crouch==false) {
+			if(collisionOn==false && jump==false && crouch==false && blocking==false) {
 				switch(direction) {
 				case "left": x-=speed;break;
 				case "right": x+=speed;break;
@@ -386,35 +548,126 @@ public class Player extends Entity{
 		}
 		
 		
-		if(keyH.shot1KeyPressed==true && stamina>0) {
-			projectile=new Projectile(projectileName, gp);
-			projectile.set(x,y, direction,this);
-			gp.projectileList.add(projectile);
-			gp.playSE(1);
-			stamina--;
-			staminaRecover=0;
-			keyH.shot1KeyPressed=false;
+	}
+	
+	
+	
+	public void bundingAction11(){
+		if(keyH.jump1Pressed==true || keyH.crouch1Pressed==true || keyH.left1Pressed==true ||
+				keyH.right1Pressed==true || keyH.lightAttack1==true|| keyH.heavyAttack1==true|| keyH.block1==true) {
+			if(keyH.jump1Pressed==true) {
+				jump=true;
+				spriteCounter=0;
+				if(keyH.left1Pressed==true) {
+					jumpDirection="left";
+				}else if(keyH.right1Pressed==true) {
+					jumpDirection="right";
+				}
+				
+			}else if(keyH.lightAttack1==true && stamina>0) {
+				lightAttacking=true;
+				spriteCounter=0;
+				staminaRecover=0;
+			}else if(keyH.heavyAttack1==true && stamina>0) {
+				heavyAttacking=true;
+				spriteCounter=0;
+				staminaRecover=0;
+			}else if(keyH.block1==true) {
+				blocking=true;
+				spriteCounter=0;
+			}
+			else if(keyH.shot1KeyPressed==true && stamina>0) {
+				projectile=new Projectile(projectileName, gp);
+				projectile.set(x,y, direction,this);
+				gp.projectileList.add(projectile);
+				gp.playSE(1);
+				stamina--;
+				staminaRecover=0;
+				keyH.shot1KeyPressed=false;
+			}else if(keyH.crouch1Pressed==true) {
+				crouch=true;
+				solidArea.y+=gp.tileSize/2;
+				solidArea.x=x+6;// dc am nevoie si de el aici
+				spriteCounter=0;
+			}
+			else if(keyH.left1Pressed==true) {
+				direction="left";
+			}
+			else if(keyH.right1Pressed==true) {
+				direction="right";
+			}
+		
+			collisionOn=gp.ccheck.CheckCollision(this);
+		
+			if(collisionOn==false) {
+				collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
+			}
+	
+		
+			if(collisionOn==false && jump==false && crouch==false && blocking==false) {
+				switch(direction) {
+				case "left": x-=speed;break;
+				case "right": x+=speed;break;
+				}
+				solidArea.x=x+6;
+				solidArea.y=y+2;
+			}
+			//gp.eHandler.checkEvent();
+	
+			spriteCounter++;
+			if(stamina<10) {
+				staminaRecover++;
+			}
+			if(spriteCounter>8) {
+				if(spriteNum==1) {
+					spriteNum=2;
+				}
+				else if(spriteNum==2) {
+					spriteNum=1;
+				}
+				spriteCounter=0;
+			}
+		}else {
+			standCounter++;
+			if(stamina<10) {
+				staminaRecover++;
+			}
+			if(standCounter>20) {
+				standCounter=0;
+				spriteNum=1;
+			}
 		}
+		if(staminaRecover>240) {
+			stamina++;
+			staminaRecover=0;
+		}
+		
+		
 	}
 	
 	
 	public void update2() {
 		
-		if(jump==false) {
+		
+		if(hp<1) {
+			gp.gameState=0;
+			gp.ui.text="Player 1 WON";
+		}else if(jump==false && y>gp.screenHeight2/5*3) {
+		
 			if(y-gp.tileSize>gp.player1.y) {
 				collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
 			}
-			if(collisionOn==false && y>gp.screenHeight2/5*3) {
+		
+			if(collisionOn==false ) {
 				y-=speed;
+			}else{
+			collisionOn=false;
 			}
-		}
-		if(hp<=0) {
-			//gp.ui.showMessage("Player dead");
 		}else if(jump==true) {
 			if(jumpDirection=="") {
-				jump21Action();
+				jump1Action();
 			}else {
-				jump22Action();
+				jump2Action();
 			}					
 	
 		}else if(crouch==true){
@@ -423,6 +676,8 @@ public class Player extends Entity{
 			lightAttack2();
 		}else if(heavyAttacking==true) {
 			heavyAttack2();
+		}else if(blocking==true) {
+			block();
 		}else {
 			bundingAction2();
 					
@@ -430,6 +685,7 @@ public class Player extends Entity{
 		
 		
 	}
+	
 	
 	public void lightAttack2() {
 		spriteCounter++;
@@ -445,7 +701,11 @@ public class Player extends Entity{
 			}
 			attackOn=gp.ccheck.CheckAttack(this,gp.player1);
 			if(attackOn==true && gp.player1.invincible==false) {
-				gp.player1.hp-=1;
+				if(gp.player2.blocking==true) {
+					gp.player1.hp-=5;
+				}else {
+					gp.player1.hp-=10;
+				}
 				gp.player1.invincible=true;
 			}
 				
@@ -461,72 +721,6 @@ public class Player extends Entity{
 				
 		}
 	}
-	
-	public void jump21Action() {
-		
-		spriteCounter++;
-		collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
-	
-		if(collisionOn==false) {
-			if(spriteCounter<=20) {
-				y-=speed;
-			}else if(spriteCounter<40) {
-				y+=speed;
-			}else {
-				jump=false;
-				jumpDirection="";
-				spriteCounter=0;
-			}
-		}
-	}
-	
-	public void jump22Action() {
-		spriteCounter++;
-		collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
-	
-		if(collisionOn==false && jumpDirection=="left") {
-			if(spriteCounter<=20) {
-				y-=speed;
-				x-=speed;
-			}else if(spriteCounter<40) {
-				y+=speed;
-				x-=speed;
-			}else {
-				jump=false;
-				jumpDirection="";
-				spriteCounter=0;
-			}
-		}
-		
-		if(collisionOn==false && jumpDirection=="right") {
-			if(spriteCounter<=20) {
-				y-=speed;
-				x+=speed;
-			}else if(spriteCounter<40) {
-				y+=speed;
-				x+=speed;
-			}else {
-				jump=false;
-				jumpDirection="";
-				spriteCounter=0;
-			}
-		}
-	}
-	
-	
-	public boolean check2Landing() {
-		if(y>gp.screenHeight2/5*3) {
-			
-			if(gp.ccheck.CheckEntity(this, gp.player2)==true) {
-				if(y>gp.player2.y) {
-					return true;
-				}
-			}
-			return false;
-		}
-		return true;
-	}
-	
 	
 	
 	public void heavyAttack2() {
@@ -545,7 +739,11 @@ public class Player extends Entity{
 			}
 			attackOn=gp.ccheck.CheckAttack(this,gp.player1);
 			if(attackOn==true && gp.player1.invincible==false) {
-				gp.player1.hp-=2;
+				if(gp.player1.blocking==true) {
+					gp.player1.hp-=10;
+				}else {
+					gp.player1.hp-=20;
+				}
 				gp.player1.invincible=true;
 			}	
 				
@@ -562,6 +760,64 @@ public class Player extends Entity{
 	}
 	
 	
+	public void jump1Action() {
+		
+		spriteCounter++;
+		collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
+	
+		if(collisionOn==false) {
+			if(spriteCounter<=20) {
+				y-=speed;
+			}else if(spriteCounter<40) {
+				y+=speed;
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
+		}
+		solidArea.y=y+2;
+	}
+	
+	public void jump2Action() {
+		spriteCounter++;
+		collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
+	
+		if(collisionOn==false && jumpDirection=="left") {
+			if(spriteCounter<=20) {
+				y-=speed;
+				x-=speed;
+			}else if(spriteCounter<40) {
+				y+=speed;
+				x-=speed;
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
+		}
+		
+		if(collisionOn==false && jumpDirection=="right") {
+			if(spriteCounter<=20) {
+				y-=speed;
+				x+=speed;
+			}else if(spriteCounter<40) {
+				y+=speed;
+				x+=speed;
+			}else {
+				jump=false;
+				jumpDirection="";
+				spriteCounter=0;
+			}
+		}
+		solidArea.x=x+6;
+		solidArea.y=y+2;
+	}
+	
+	
+	
+	
+	
 	public void bundingAction2(){
 		if(keyH.jump2Pressed==true || keyH.crouch2Pressed==true || keyH.left2Pressed==true ||
 				keyH.right2Pressed==true || keyH.lightAttack2==true|| keyH.heavyAttack2==true|| keyH.block2==true) {
@@ -574,15 +830,25 @@ public class Player extends Entity{
 					jumpDirection="right";
 				}
 				
-			}else if(keyH.lightAttack2==true) {
+			}else if(keyH.lightAttack2==true && stamina>0) {
 				lightAttacking=true;
 				spriteCounter=0;
-			}else if(keyH.heavyAttack2==true) {
+				staminaRecover=0;
+			}else if(keyH.heavyAttack2==true && stamina>0) {
 				heavyAttacking=true;
 				spriteCounter=0;
+				staminaRecover=0;
 			}else if(keyH.block2==true) {
 				blocking=true;
 				spriteCounter=0;
+			}else if(keyH.shot2KeyPressed==true && stamina>0) {
+				projectile=new Projectile(projectileName, gp);
+				projectile.set(x,y, direction,this);
+				gp.projectileList.add(projectile);
+				gp.playSE(1);
+				stamina--;
+				staminaRecover=0;
+				keyH.shot2KeyPressed=false;
 			}else if(keyH.crouch2Pressed==true) {
 				crouch=true;
 				solidArea.y+=gp.tileSize/2;
@@ -599,16 +865,11 @@ public class Player extends Entity{
 			collisionOn=gp.ccheck.CheckCollision(this);
 		
 			if(collisionOn==false) {
-				if(gp.gameMode==0) {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.npc_rival);
-				}else {
-					collisionOn=gp.ccheck.CheckEntity(this, gp.player2);
-				}
-			
+				collisionOn=gp.ccheck.CheckEntity(this, gp.player1);
 			}
 	
 		
-			if(collisionOn==false && jump==false && crouch==false) {
+			if(collisionOn==false && jump==false && crouch==false && blocking==false) {
 				switch(direction) {
 				case "left": x-=speed;break;
 				case "right": x+=speed;break;
@@ -647,15 +908,6 @@ public class Player extends Entity{
 		}
 		
 		
-		if(keyH.shot1KeyPressed==true && stamina>0) {
-			projectile=new Projectile(projectileName, gp);
-			projectile.set(x,y, direction,this);
-			gp.projectileList.add(projectile);
-			gp.playSE(1);
-			stamina--;
-			staminaRecover=0;
-			keyH.shot1KeyPressed=false;
-		}
 	}
 	
 	
@@ -701,7 +953,7 @@ public class Player extends Entity{
 		}
 		if(lightAttacking==true && direction == "left") {
 			g2.drawImage(image,x-gp.tileSize,y,null);
-		}else if(lightAttacking==true && direction == "left"){
+		}else if(heavyAttacking==true && direction == "left"){
 			//g2.drawImage(image,x-gp.tileSize,y-gp.tileSize,null);
 			g2.drawImage(image,x-gp.tileSize,y,null);
 		}else {

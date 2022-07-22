@@ -44,8 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public int gameState;
 	public final int titleState=0;
 	public final int playState=1;
-	public final int optionState=2;
-	public final int pauseState=3;
+	public final int pauseState=2;
 	
 	public int gameMode;
 	public final int onePlayerMode=0;
@@ -122,11 +121,13 @@ public class GamePanel extends JPanel implements Runnable{
 			
 		if(gameState == playState) {
 			
-			player1.update1();
+			
 			if(gameMode==0) {
 				npc_rival.update();
+				player1.update0();
 			}else {
 				player2.update2();
+				player1.update1();
 			}
 			
 			for(int i=0;i<projectileList.size();i++) {
